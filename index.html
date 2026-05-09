@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+    <button onclick="hitungKalibrasi()">Hitung Kalibrasi</button>
+
+    <div class="hasil" id="hasil" style="display:none;"></div>
+
+    <div class="footer">
+      GitHub Pages - Kalkulator Kalibrasi Thermometer
+    </div>
+  </div>
+
+  <script>
+    function hitungKalibrasi() {
+      const kayu = parseFloat(document.getElementById('kayu').value);
+      const digital = parseFloat(document.getElementById('digital').value);
+      const hasil = document.getElementById('hasil');
+
+      if (isNaN(kayu) || isNaN(digital)) {
+        hasil.style.display = 'block';
+        hasil.innerHTML = 'Mohon isi semua nilai suhu.';
+        return;
+      }
+
+      const selisih = digital - kayu;
+      const koreksi = kayu - digital;
+
+      let status = '';
+
+      if (Math.abs(selisih) <= 0.5) {
+        status = 'Thermometer digital masih akurat.';
+      } else {
+        status = 'Thermometer digital perlu dikalibrasi.';
+      }
+
+      hasil.style.display = 'block';
+      hasil.innerHTML = `
+        <h3>Hasil Kalibrasi</h3>
+        <p><strong>Suhu Patokan (Kayu):</strong> ${kayu.toFixed(1)} °C</p>
+        <p><strong>Suhu Digital:</strong> ${digital.toFixed(1)} °C</p>
+        <p><strong>Selisih:</strong> ${selisih.toFixed(1)} °C</p>
+        <p><strong>Nilai Koreksi:</strong> ${koreksi.toFixed(1)} °C</p>
+        <p><strong>Status:</strong> ${status}</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
