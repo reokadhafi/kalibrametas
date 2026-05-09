@@ -1,58 +1,152 @@
 <!DOCTYPE html>
-    <button onclick="hitungKalibrasi()">
-      Hitung Kalibrasi
-    </button>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalibrasi Dark Mode</title>
+    <style>
+        /* Tema Gelap */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            background-color: #121212; 
+            color: #e0e0e0;
+        }
+        
+        .card { 
+            background: #1e1e1e; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5); 
+            width: 100%; 
+            max-width: 320px;
+            border: 1px solid #333;
+        }
 
-    <div class="result" id="hasil"></div>
+        h2 { 
+            margin-top: 0;
+            color: #bb86fc; 
+            font-size: 1.4rem; 
+            text-align: center; 
+            letter-spacing: 1px;
+        }
 
-    <div class="footer">
-      GitHub Pages • Thermometer Calibration System
+        .input-group { margin-bottom: 20px; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 0.85rem; 
+            color: #b0b0b0; 
+        }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            background: #2c2c2c;
+            border: 2px solid #3d3d3d; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 1.1rem; 
+            color: #ffffff;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus { border-color: #bb86fc; }
+
+        .result-box { 
+            margin-top: 10px; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center; 
+            transition: all 0.3s ease;
+        }
+
+        .label-hasil { 
+            font-size: 0.75rem; 
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .nilai-koreksi { 
+            font-size: 3rem; 
+            font-weight: bold; 
+        }
+
+        /* Warna Status */
+        .positif { background-color: #1b5e20; color: #a5d6a7; }
+        .negatif { background-color: #b71c1c; color: #ef9a9a; }
+        .netral { background-color: #333; color: #9e9e9e; }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Kalibrasi Suhu Metas</h2>
+    
+    <div class="input-group">
+        <label>Suhu Standar (Acuan)</label>
+        <input type="number" id="standar" placeholder="0" oninput="hitung()" step="any">
     </div>
-  </div>
 
-  <script>
-    function hitungKalibrasi() {
-      const kayu = parseFloat(document.getElementById('kayu').value);
-      const digital = parseFloat(document.getElementById('digital').value);
-      const hasil = document.getElementById('hasil');
+    <div class="input-group">
+        <label>Suhu Perangkat Yang Akan Dikalibrasi</label>
+        <input type="number" id="alat" placeholder="0" oninput="hitung()" step="any">
+    </div>
 
-      if (isNaN(kayu) || isNaN(digital)) {
-        hasil.style.display = 'block';
-        hasil.innerHTML = `
-          <div class="status warning">
-            Mohon isi semua data suhu.
-          </div>
-        `;
-        return;
-      }
+    <div id="display" class="result-box netral">
+        <div class="label-hasil">KOREKSI</div>
+        <div id="hasil" class="nilai-koreksi">0</div>
+    </div>
+    
+    <div class="footer-note">
+        Hasil otomatis berubah saat mengetik
+        <p>2026 - Yontech</p>
+    </div>
+</div>
 
-      const selisih = digital - kayu;
-      const koreksi = kayu - digital;
+<script>
+    function hitung() {
+        const standar = parseFloat(document.getElementById('standar').value);
+        const alat = parseFloat(document.getElementById('alat').value);
+        const display = document.getElementById('display');
+        const hasilElement = document.getElementById('hasil');
 
-      let statusClass = 'good';
-      let statusText = 'Thermometer digital masih akurat ✅';
+        if (!isNaN(standar) && !isNaN(alat)) {
+            // Rumus: Koreksi = Standar - Alat
+            const koreksi = (standar - alat).toFixed(1);
+            
+            // Tambahkan tanda + jika angka di atas nol
+            const hasilTeks = koreksi > 0 ? "+" + koreksi : koreksi;
+            hasilElement.innerText = hasilTeks;
 
-      if (Math.abs(selisih) > 0.5) {
-        statusClass = 'warning';
-        statusText = 'Thermometer digital perlu dikalibrasi ⚠️';
-      }
-
-      hasil.style.display = 'block';
-
-      hasil.innerHTML = `
-        <h2>Hasil Kalibrasi</h2>
-
-        <p>🌡️ <strong>Suhu Patokan:</strong> ${kayu.toFixed(1)} °C</p>
-        <p>📟 <strong>Suhu Digital:</strong> ${digital.toFixed(1)} °C</p>
-        <p>📏 <strong>Selisih:</strong> ${selisih.toFixed(1)} °C</p>
-        <p>🛠️ <strong>Nilai Koreksi:</strong> ${koreksi.toFixed(1)} °C</p>
-
-        <div class="status ${statusClass}">
-          ${statusText}
-        </div>
-      `;
+            // Logika Warna
+            if (koreksi > 0) {
+                display.className = "result-box positif";
+            } else if (koreksi < 0) {
+                display.className = "result-box negatif";
+            } else {
+                display.className = "result-box netral";
+            }
+        } else {
+            hasilElement.innerText = "0";
+            display.className = "result-box netral";
+        }
     }
-  </script>
+</script>
 
 </body>
 </html>
