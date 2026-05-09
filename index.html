@@ -6,7 +6,7 @@
     <title>Kalibrasi Suhu Yontech</title>
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Segoe UI', sans-serif; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -18,86 +18,89 @@
         
         .card { 
             background: #1e1e1e; 
-            padding: 25px; 
+            padding: 20px; 
             border-radius: 12px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.5); 
             width: 100%; 
-            max-width: 350px;
+            max-width: 380px;
             border: 1px solid #333;
         }
 
         h2 { 
             margin: 0 0 20px 0;
             color: #bb86fc; 
-            font-size: 1.4rem; 
+            font-size: 1.1rem; 
             text-align: center; 
-            letter-spacing: 1px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .input-group { margin-bottom: 15px; }
+        /* Baris Input */
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
         
         label { 
-            display: block; 
-            margin-bottom: 5px; 
-            font-size: 0.8rem; 
+            font-size: 0.85rem; 
             color: #b0b0b0; 
         }
 
         input { 
-            width: 100%; 
-            padding: 12px; 
+            width: 80px; /* Ukuran input kecil */
+            padding: 6px; 
             background: #2c2c2c;
-            border: 2px solid #3d3d3d; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-size: 1.1rem; 
-            color: #ffffff;
+            border: 1px solid #444; 
+            border-radius: 4px; 
+            font-size: 1rem; 
+            color: #03dac6;
             outline: none;
-            transition: border-color 0.3s;
+            text-align: center;
         }
 
         input:focus { border-color: #bb86fc; }
 
+        /* Area Hasil */
         .result-container {
             margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .result-box { 
-            padding: 15px; 
+            padding: 10px; 
             border-radius: 8px; 
             text-align: center; 
             background-color: #252525;
-            border: 1px dashed #444;
+            border: 1px solid #333;
         }
 
         .highlight {
-            border: 2px solid #03dac6;
+            grid-column: span 2;
+            border: 1px solid #03dac6;
             background-color: #1a2e2c;
+            padding: 15px;
         }
 
         .label-hasil { 
-            font-size: 0.7rem; 
-            letter-spacing: 1.5px;
-            margin-bottom: 8px;
-            color: #bbb;
+            font-size: 0.65rem; 
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
         }
 
-        .nilai { font-weight: bold; font-size: 1.5rem; color: #ffffff; }
-        .nilai-besar { font-size: 3rem; font-weight: bold; color: #03dac6; }
+        .nilai { font-weight: bold; font-size: 1.3rem; color: #fff; }
+        .nilai-besar { font-size: 2.8rem; font-weight: bold; color: #03dac6; line-height: 1; }
 
-        .footer-note {
+        .footer {
             text-align: center;
-            font-size: 0.75rem;
-            color: #666;
-            margin-top: 25px;
-            line-height: 1.5;
+            font-size: 0.7rem;
+            color: #444;
+            margin-top: 20px;
         }
-        
-        hr { border: 0; border-top: 1px solid #333; margin: 20px 0; }
     </style>
 </head>
 <body>
@@ -105,38 +108,40 @@
 <div class="card">
     <h2>Kalibrasi Penetas</h2>
     
-    <div class="input-group">
+    <div class="input-row">
         <label>Suhu Standar (Acuan)</label>
         <input type="number" id="standar" placeholder="0" oninput="hitung()" step="any">
     </div>
 
-    <div class="input-group">
-        <label>Suhu Terbaca di Alat Sekarang</label>
+    <div class="input-row">
+        <label>Suhu Terbaca Alat</label>
         <input type="number" id="alat" placeholder="0" oninput="hitung()" step="any">
     </div>
 
-    <div class="input-group">
+    <div class="input-row">
         <label>Nilai Kalibrasi Saat Ini</label>
         <input type="number" id="offset_skrg" value="0" oninput="hitung()" step="any">
     </div>
 
-    <hr>
-
     <div class="result-container">
         <div class="result-box">
-            <div class="label-hasil">NILAI KOREKSI</div>
+            <div class="label-hasil">Koreksi</div>
             <div id="koreksi_baru" class="nilai">0</div>
         </div>
 
+        <div class="result-box">
+            <div class="label-hasil">Status</div>
+            <div id="status" class="nilai" style="font-size: 0.9rem; color: #bb86fc;">-</div>
+        </div>
+
         <div class="result-box highlight">
-            <div class="label-hasil" style="color: #03dac6;">SETTING HARUS DIINPUT</div>
+            <div class="label-hasil" style="color: #03dac6;">Setting Kalibrasi Baru</div>
             <div id="total_offset" class="nilai-besar">0</div>
         </div>
     </div>
     
-    <div class="footer-note">
-        Hasil otomatis berubah saat mengetik<br>
-        <b>© 2026 - Yontech</b>
+    <div class="footer">
+        © 2026 - Yontech
     </div>
 </div>
 
@@ -146,24 +151,24 @@
         const alat = parseFloat(document.getElementById('alat').value);
         const offsetSkrg = parseFloat(document.getElementById('offset_skrg').value) || 0;
 
-        const koreksiBaruElement = document.getElementById('koreksi_baru');
-        const totalOffsetElement = document.getElementById('total_offset');
+        const koreksiEl = document.getElementById('koreksi_baru');
+        const totalEl = document.getElementById('total_offset');
+        const statusEl = document.getElementById('status');
 
         if (!isNaN(standar) && !isNaN(alat)) {
-            // Hitung selisih murni
             const selisih = (standar - alat).toFixed(1);
-            
-            // Hitung akumulasi untuk settingan alat
-            const totalOffset = (offsetSkrg + (standar - alat)).toFixed(1);
+            const total = (offsetSkrg + (standar - alat)).toFixed(1);
 
-            // Tampilkan Koreksi (dengan tanda + jika positif)
-            koreksiBaruElement.innerText = (selisih > 0 ? "+" : "") + selisih;
+            koreksiEl.innerText = (selisih > 0 ? "+" : "") + selisih;
+            totalEl.innerText = (total > 0 ? "+" : "") + total;
             
-            // Tampilkan Settingan Akhir (dengan tanda + jika positif)
-            totalOffsetElement.innerText = (totalOffset > 0 ? "+" : "") + totalOffset;
+            if(selisih > 0) statusEl.innerText = "Alat Rendah";
+            else if(selisih < 0) statusEl.innerText = "Alat Tinggi";
+            else statusEl.innerText = "Akurat";
         } else {
-            koreksiBaruElement.innerText = "0";
-            totalOffsetElement.innerText = "0";
+            koreksiEl.innerText = "0";
+            totalEl.innerText = "0";
+            statusEl.innerText = "-";
         }
     }
 </script>
