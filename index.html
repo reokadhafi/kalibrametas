@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalibrasi Suhu Yontech</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Font Digital Asli (Digital-7) -->
+    <link href="https://fonts.cdnfonts.com/css/digital-7-mono" rel="stylesheet">
+
     <style>
         body { 
             font-family: 'Segoe UI', sans-serif; 
@@ -22,7 +29,7 @@
             border-radius: 12px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.5); 
             width: 100%; 
-            max-width: 280px;
+            max-width: 300px;
             border: 1px solid #333;
         }
 
@@ -35,21 +42,31 @@
             letter-spacing: 1px;
         }
 
-        /* Baris Input */
+        /* INPUT */
         .input-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            gap: 10px;
         }
         
         label { 
-            font-size: 0.85rem; 
+            font-size: 0.82rem; 
             color: #b0b0b0; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label i {
+            color: #03dac6;
+            width: 16px;
+            text-align: center;
         }
 
         input { 
-            width: 80px; /* Ukuran input kecil */
+            width: 85px;
             padding: 6px; 
             background: #2c2c2c;
             border: 1px solid #444; 
@@ -60,9 +77,11 @@
             text-align: center;
         }
 
-        input:focus { border-color: #bb86fc; }
+        input:focus { 
+            border-color: #bb86fc; 
+        }
 
-        /* Area Hasil */
+        /* RESULT */
         .result-container {
             margin-top: 20px;
             display: grid;
@@ -78,22 +97,68 @@
             border: 1px solid #333;
         }
 
+        /* DIGITAL SCREEN RED */
         .highlight {
             grid-column: span 2;
-            border: 1px solid #03dac6;
-            background-color: #1a2e2c;
+            border: 1px solid #ff0000;
+            background-color: #000; 
             padding: 15px;
+            border-radius: 10px;
+            box-shadow: 
+                inset 0 0 15px rgba(255, 0, 0, 0.3),
+                0 0 12px rgba(255, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Efek Scanline */
+        .highlight::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 0, 0, 0) 50%, rgba(255, 0, 0, 0.05) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        .label-hasil { 
+            font-size: 0.65rem; 
+            color: #8a5c5c;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
 
         .label-hasil { 
             font-size: 0.65rem; 
             color: #999;
             margin-bottom: 5px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .nilai { font-weight: bold; font-size: 1.3rem; color: #fff; }
-        .nilai-besar { font-size: 2.8rem; font-weight: bold; color: #03dac6; line-height: 1; }
+        .nilai { 
+            font-weight: bold; 
+            font-size: 1.3rem; 
+            color: #fff; 
+        }
+
+        /* FONT DIGITAL - RED GLOW */
+        .nilai-besar { 
+            font-size: 3rem; 
+            font-weight: normal; 
+            color: #ff0000; 
+            line-height: 1;
+            font-family: 'Digital-7 Mono', sans-serif;
+            letter-spacing: 2px;
+            text-shadow:
+                0 0 5px rgba(255, 0, 0, 0.8),
+                0 0 15px rgba(255, 0, 0, 0.4);
+        }
 
         .footer {
             text-align: center;
@@ -109,21 +174,31 @@
     <h2>Kalibrasi Penetas</h2>
     
     <div class="input-row">
-        <label>Suhu Standar (Acuan)</label>
+        <label>
+            <i class="fa-solid fa-temperature-half"></i>
+            Suhu Standar (Acuan)
+        </label>
         <input type="number" id="standar" placeholder="0" oninput="hitung()" step="any">
     </div>
 
     <div class="input-row">
-        <label>Suhu Terbaca Alat</label>
+        <label>
+            <i class="fa-solid fa-display"></i>
+            Suhu Terbaca Alat
+        </label>
         <input type="number" id="alat" placeholder="0" oninput="hitung()" step="any">
     </div>
 
     <div class="input-row">
-        <label>Nilai Kalibrasi Saat Ini</label>
+        <label>
+            <i class="fa-solid fa-microchip"></i>
+            Offset Saat Ini
+        </label>
         <input type="number" id="offset_skrg" value="0" oninput="hitung()" step="any">
     </div>
 
     <div class="result-container">
+
         <div class="result-box">
             <div class="label-hasil">Koreksi</div>
             <div id="koreksi_baru" class="nilai">0</div>
@@ -135,9 +210,15 @@
         </div>
 
         <div class="result-box highlight">
-            <div class="label-hasil" style="color: #03dac6;">Setting Kalibrasi Baru</div>
-            <div id="total_offset" class="nilai-besar">0</div>
+            <div class="label-hasil" style="color: #ff0000;">
+                Setting Kalibrasi Baru
+            </div>
+
+            <div id="total_offset" class="nilai-besar">
+                0.0
+            </div>
         </div>
+
     </div>
     
     <div class="footer">
@@ -161,13 +242,19 @@
 
             koreksiEl.innerText = (selisih > 0 ? "+" : "") + selisih;
             totalEl.innerText = (total > 0 ? "+" : "") + total;
-            
-            if(selisih > 0) statusEl.innerText = "Alat Rendah";
-            else if(selisih < 0) statusEl.innerText = "Alat Tinggi";
-            else statusEl.innerText = "Akurat";
+
+            if (selisih > 0) {
+                statusEl.innerText = "Rendah";
+            } 
+            else if (selisih < 0) {
+                statusEl.innerText = "Tinggi";
+            } 
+            else {
+                statusEl.innerText = "Akurat";
+            }
         } else {
             koreksiEl.innerText = "0";
-            totalEl.innerText = "0";
+            totalEl.innerText = "0.0";
             statusEl.innerText = "-";
         }
     }
