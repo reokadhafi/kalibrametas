@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-    <button onclick="hitungKalibrasi()">Hitung Kalibrasi</button>
+    <button onclick="hitungKalibrasi()">
+      Hitung Kalibrasi
+    </button>
 
-    <div class="hasil" id="hasil" style="display:none;"></div>
+    <div class="result" id="hasil"></div>
 
     <div class="footer">
-      GitHub Pages - Kalkulator Kalibrasi Thermometer
+      GitHub Pages • Thermometer Calibration System
     </div>
   </div>
 
@@ -16,29 +18,38 @@
 
       if (isNaN(kayu) || isNaN(digital)) {
         hasil.style.display = 'block';
-        hasil.innerHTML = 'Mohon isi semua nilai suhu.';
+        hasil.innerHTML = `
+          <div class="status warning">
+            Mohon isi semua data suhu.
+          </div>
+        `;
         return;
       }
 
       const selisih = digital - kayu;
       const koreksi = kayu - digital;
 
-      let status = '';
+      let statusClass = 'good';
+      let statusText = 'Thermometer digital masih akurat ✅';
 
-      if (Math.abs(selisih) <= 0.5) {
-        status = 'Thermometer digital masih akurat.';
-      } else {
-        status = 'Thermometer digital perlu dikalibrasi.';
+      if (Math.abs(selisih) > 0.5) {
+        statusClass = 'warning';
+        statusText = 'Thermometer digital perlu dikalibrasi ⚠️';
       }
 
       hasil.style.display = 'block';
+
       hasil.innerHTML = `
-        <h3>Hasil Kalibrasi</h3>
-        <p><strong>Suhu Patokan (Kayu):</strong> ${kayu.toFixed(1)} °C</p>
-        <p><strong>Suhu Digital:</strong> ${digital.toFixed(1)} °C</p>
-        <p><strong>Selisih:</strong> ${selisih.toFixed(1)} °C</p>
-        <p><strong>Nilai Koreksi:</strong> ${koreksi.toFixed(1)} °C</p>
-        <p><strong>Status:</strong> ${status}</p>
+        <h2>Hasil Kalibrasi</h2>
+
+        <p>🌡️ <strong>Suhu Patokan:</strong> ${kayu.toFixed(1)} °C</p>
+        <p>📟 <strong>Suhu Digital:</strong> ${digital.toFixed(1)} °C</p>
+        <p>📏 <strong>Selisih:</strong> ${selisih.toFixed(1)} °C</p>
+        <p>🛠️ <strong>Nilai Koreksi:</strong> ${koreksi.toFixed(1)} °C</p>
+
+        <div class="status ${statusClass}">
+          ${statusText}
+        </div>
       `;
     }
   </script>
