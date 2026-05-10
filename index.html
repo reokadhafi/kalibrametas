@@ -234,6 +234,7 @@
         }
 
         function prosesWaktu() {
+
             const tglMasukVal = document.getElementById('tgl_masuk').value;
             const output = document.getElementById('output_hasil');
             const label = document.getElementById('label_hasil');
@@ -244,29 +245,127 @@
             }
 
             const tglMasuk = new Date(tglMasukVal);
-            const opsi = { day: 'numeric', month: 'long', year: 'numeric' };
+            const opsi = {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            };
 
+            // =========================
+            // MODE CARI TANGGAL
+            // =========================
             if (modeAktif === 'hari') {
+
                 const jmlHari = document.getElementById('input_hari').value;
+
                 label.innerText = "Jatuh Pada Tanggal";
+
                 if (jmlHari) {
+
                     let target = new Date(tglMasuk);
-                    target.setDate(target.getDate() + parseInt(jmlHari));
-                    output.innerText = target.toLocaleDateString('id-ID', opsi);
+
+                    target.setDate(
+                        target.getDate() + parseInt(jmlHari)
+                    );
+
+                    output.innerText =
+                        target.toLocaleDateString('id-ID', opsi);
+
                 } else {
+
                     output.innerText = "-";
+
                 }
-            } else {
-                const tglTujuanVal = document.getElementById('input_tgl').value;
-                label.innerText = "Lama Waktu (Hari)";
-                if (tglTujuanVal) {
-                    const tglTujuan = new Date(tglTujuanVal);
-                    const selisih = Math.ceil((tglTujuan - tglMasuk) / (1000 * 60 * 60 * 24));
-                    output.innerText = selisih >= 0 ? selisih + " Hari" : "Tanggal Lampau";
-                } else {
-                    output.innerText = "-";
-                }
+
             }
+
+            // =========================
+            // MODE CARI LAMA WAKTU
+            // =========================
+            else {
+
+                const tglTujuanVal =
+                    document.getElementById('input_tgl').value;
+
+                label.innerText = "Lama Waktu";
+
+                if (tglTujuanVal) {
+
+                    const tglTujuan = new Date(tglTujuanVal);
+
+                    if (tglTujuan >= tglMasuk) {
+
+                        let tahun =
+                            tglTujuan.getFullYear() -
+                            tglMasuk.getFullYear();
+
+                        let bulan =
+                            tglTujuan.getMonth() -
+                            tglMasuk.getMonth();
+
+                        let hari =
+                            tglTujuan.getDate() -
+                            tglMasuk.getDate();
+
+                        // Jika hari negatif
+                        if (hari < 0) {
+
+                            bulan--;
+
+                            const bulanSebelumnya = new Date(
+                                tglTujuan.getFullYear(),
+                                tglTujuan.getMonth(),
+                                0
+                            ).getDate();
+
+                            hari += bulanSebelumnya;
+                        }
+
+                        // Jika bulan negatif
+                        if (bulan < 0) {
+
+                            tahun--;
+                            bulan += 12;
+
+                        }
+
+                        // Format hasil
+                        let hasil = [];
+
+                        if (tahun > 0)
+                            hasil.push(`${tahun} Tahun`);
+
+                        if (bulan > 0)
+                            hasil.push(`${bulan} Bulan`);
+
+                        if (hari > 0)
+                            hasil.push(`${hari} Hari`);
+
+                        if (hasil.length === 0) {
+
+                            output.innerText = "0 Hari";
+
+                        } else {
+
+                            output.innerText =
+                                hasil.join(' ');
+
+                        }
+
+                    } else {
+
+                        output.innerText = "Tanggal Lampau";
+
+                    }
+
+                } else {
+
+                    output.innerText = "-";
+
+                }
+
+            }
+
         }
     </script>
 </body>
