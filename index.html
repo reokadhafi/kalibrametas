@@ -141,26 +141,26 @@
             <div style="flex: 1;">
                 <label>
                     <i class="fa-solid fa-temperature-half"></i>
-                    Suhu Acuan
+                    Suhu Thermo Kayu (acuan)
                 </label>
                 <input type="number" id="standar" placeholder="38.0" oninput="hitungKalibrasi()">
             </div>
             <div style="flex: 1;">
                 <label>
                     <i class="fa-solid fa-display"></i>
-                    Suhu Alat
+                    Suhu Thermo Digital
                 </label>
                 <input type="number" id="alat" placeholder="37.5" oninput="hitungKalibrasi()">
             </div>
         </div>
         <label>
             <i class="fa-solid fa-microchip"></i>
-            Nilai Kalibrasi Saat Ini
+            Nilai Kalibrasi Thermo Digital Saat Ini
         </label>
         <input type="number" id="offset_skrg" value="0" oninput="hitungKalibrasi()" style="margin-bottom: 15px;">
 
         <div class="highlight">
-            <div style="font-size: 0.6rem; color: var(--danger); margin-bottom: 5px;">SETTING BARU</div>
+            <div style="font-size: 0.6rem; color: var(--danger); margin-bottom: 5px;">SETTING KALIBRASI THERMO DIGITAL BARU</div>
             <div id="total_offset" class="nilai-besar">0.0</div>
         </div>
     </div>
